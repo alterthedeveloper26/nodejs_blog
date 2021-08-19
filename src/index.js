@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const handlebars = require("express-handlebars");
 const path = require("path");
+const methodOveride = require("method-override");
 
 const route = require("./routes/index.route");
 
@@ -11,6 +12,9 @@ db.connect();
 
 const app = express();
 const port = 3000;
+
+//Method overide setting
+app.use(methodOveride("_method"));
 
 //neu request file tinh thi se vao folder nay de tim
 //return src/rescources/public
@@ -27,6 +31,11 @@ app.engine(
   "hbs",
   handlebars({
     extname: "hbs",
+    helpers: {
+      autoIncrease: function (a) {
+        return ++a;
+      },
+    },
   })
 );
 app.set("view engine", "hbs");

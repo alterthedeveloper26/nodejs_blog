@@ -1,0 +1,48 @@
+<div class="mt-4 ms-4">
+  <div>Edit Course</div>
+  <form method="POST" action="/courses/{{course._id}}?_method=PUT" class="mt-3">
+    <div class="mb-3">
+      <label for="exampleFormControlInput1" class="form-label">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        name="name"
+        value="{{course.name}}"
+      />
+    </div>
+    <div class="mb-3">
+      <label
+        for="exampleFormControlTextarea1"
+        class="form-label"
+      >Description</label>
+      <textarea
+        class="form-control"
+        id="exampleFormControlTextarea1"
+        rows="3"
+        name="description"
+      >{{course.description}}</textarea>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlInput1" class="form-label">videoId</label>
+      <input
+        type="text"
+        class="form-control"
+        name="videoId"
+        value="{{course.videoId}}"
+      />
+    </div>
+    <div class="mb-3">
+      <label
+        for="exampleFormControlInput1"
+        class="form-label"
+      >Classification</label>
+      <input
+        type="text"
+        class="form-control"
+        name="classification"
+        value="{{course.classification}}"
+      />
+    </div>
+    <button type="submit" class="btn btn-outline-dark">Save</button>
+  </form>
+</div>

@@ -1,3 +1,7 @@
+html {
+  box-sizing: border-box;
+}
+
 @import "variables";
 h2 {
   color: $red-color;
@@ -9,4 +13,21 @@ h2 {
 
 .nav-link-custom {
   color: white;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-link-custom:hover {
+  color: white;
+  opacity: 0.7;
+}
+
+.user-avatar {
+  border-radius: 50px;
+  margin-right: 10px;
+  width: 40px;
 }
