@@ -4,6 +4,8 @@ const handlebars = require("express-handlebars");
 const path = require("path");
 const methodOveride = require("method-override");
 
+const SortMiddleWare = require("./app/middlewares/SortMiddlerware");
+
 const route = require("./routes/index.route");
 
 //Connect to db
@@ -15,6 +17,9 @@ const port = 3000;
 
 //Method overide setting
 app.use(methodOveride("_method"));
+
+//Custome middleware
+app.use(SortMiddleWare);
 
 //neu request file tinh thi se vao folder nay de tim
 //return src/rescources/public
@@ -31,11 +36,7 @@ app.engine(
   "hbs",
   handlebars({
     extname: "hbs",
-    helpers: {
-      autoIncrease: function (a) {
-        return ++a;
-      },
-    },
+    helpers: require("./helpers/handlebars"),
   })
 );
 app.set("view engine", "hbs");

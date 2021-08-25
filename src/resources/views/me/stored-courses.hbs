@@ -1,29 +1,155 @@
-<div class="mt-4">
+<form class="mt-4" method="POST" action="/courses/handle-form-actions">
   <div class="container">
     <h3>My Courses</h3>
-    <table class="table">
+    {{#if deleteCount}}
+      <h4><a href="http://localhost:3000/me/bin/courses">Deleted courses</a>
+        ({{deleteCount}})
+      </h4>
+    {{/if}}
+    <div class="mt-4 d-flex align-items-center">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="cb-select-all" />
+        <label class="form-check-label" for="cb-select-all">
+          Select all
+        </label>
+      </div>
+      <select
+        class="form-select ms-2 custom-select-options"
+        aria-label="Default select example"
+        id=""
+        name="action"
+        required
+      >
+        <option selected value="">Choose a behavior</option>
+        <option value="delete">Delete</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+
+      <button
+        id="btn-perform"
+        type="submit"
+        class="btn btn-dark ms-2 disabled"
+      >Perform</button>
+    </div>
+    <table class="table mt-4">
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Course Name</th>
-          <th scope="col">Classification</th>
-          <th scope="col" colspan="2">Created At</th>
+          <th scope="col">
+            Course Name
+            {{{sortable "name" _sort}}}
+          </th>
+          <th scope="col">
+            Classification
+            {{{sortable "classification" _sort}}}
+          </th>
+          <th scope="col" colspan="2">
+            Created At
+            {{{sortable "createdAt" _sort}}}
+          </th>
         </tr>
       </thead>
       <tbody>
         {{#each courses}}
           <tr>
-            <th scope="row">{{autoIncrease @index}}</th>
+            {{!-- {{autoIncrease @index}} --}}
+            <td>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="courseIds[]"
+                  value="{{this._id}}"
+                />
+              </div>
+            </td>
             <td>{{this.name}}</td>
             <td>{{this.classification}}</td>
             <td>{{this.createdAt}}</td>
             <td>
               <a href="/courses/{{this._id}}/edit" class="btn btn-dark">Edit</a>
-              <a href="" class="btn btn-dark">Delete</a>
+              <a
+                href=""
+                class="btn btn-dark"
+                data-id="{{this._id}}"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal"
+              >Delete</a>
+            </td>
+          </tr>
+        {{else}}
+          <tr class="mt-4">
+            <td colspan="5" class="text-center">
+              You have not posted any course!
+              <a href="/courses/create">Start posting.</a>
             </td>
           </tr>
         {{/each}}
       </tbody>
     </table>
   </div>
+</form>
+
+{{! Hidden form to submit delete request }}
+<form method="POST" name="delete-form"></form>
+
+{{! Confirmation }}
+<!-- Delete Modal -->
+<div
+  class="modal fade"
+  id="deleteModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation Box</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to delete this course?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Cancel Delete</button>
+        <button
+          id="btn-delete-course"
+          type="button"
+          class="btn btn-danger"
+        >Delete</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function (event) { var courseId;
+  var actionForm = document.forms["delete-form"]; var btnDelete =
+  document.getElementById("btn-delete-course"); var cbSelectAll =
+  $("#cb-select-all"); var cbCourseItems = $('input[name="courseIds[]"]'); var
+  btnPerform = $("#btn-perform"); $("#deleteModal").on("show.bs.modal", function
+  (event) { var button = $(event.relatedTarget); courseId = button.data("id");
+  }); btnDelete.onclick = function () { actionForm.action = "/courses/" +
+  courseId + "?_method=DELETE"; actionForm.submit(); };
+  cbSelectAll.change(function () { var isChecked = $(this).prop("checked");
+  cbCourseItems.prop("checked", isChecked); renderPerformButton(); });
+  cbCourseItems.change(function () { var isCheckedAll = cbCourseItems.length ===
+  $('input[name="courseIds[]"]:checked').length; cbSelectAll.prop("checked",
+  isCheckedAll); renderPerformButton(); }); function renderPerformButton() { var
+  checkedCount = $('input[name="courseIds[]"]:checked').length; if
+  (checkedCount) { btnPerform.removeClass("disabled"); } else {
+  btnPerform.addClass("disabled"); } } btnPerform.click(function (e) {
+  e.preventDefault; console.log("Oat do heo?"); }); });
+
+</script>

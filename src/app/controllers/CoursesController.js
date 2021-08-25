@@ -21,12 +21,12 @@ class CoursesController {
 
   //[POST] courses/store
   store(req, res, next) {
-    const formData = req.body;
+    const formData = { ...req.body };
     formData.image = `https://i.ytimg.com/vi/${req.body.videoId}/hqdefault.jpg`;
     const newCourse = new Course(formData);
     newCourse
       .save()
-      .then(() => res.redirect("/"))
+      .then(() => res.redirect("/me/stored/courses"))
       .catch((error) => {});
   }
 
@@ -49,6 +49,40 @@ class CoursesController {
     Course.updateOne({ _id: req.params.id }, formValue)
       .then(() => res.redirect("/me/stored/courses"))
       .catch(next);
+  }
+
+  //[DELETE] courses/:id
+  delete(req, res, next) {
+    Course.delete({ _id: req.params.id })
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  //[DELETE] courses/:id/destroy
+  destroy(req, res, next) {
+    Course.deleteOne({ _id: req.params.id })
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  //[PATCH] courses/:id/restore
+  restore(req, res, next) {
+    Course.restore({ _id: req.params.id })
+      .then(() => res.redirect("back"))
+      .catch(next);
+  }
+
+  //[POST] /courses/handle-form-action
+  handleFormActions(req, res, next) {
+    switch (req.body.action) {
+      case "delete":
+        Course.delete({ _id: { $in: req.body.courseIds } })
+          .then(() => res.redirect("back"))
+          .catch(next);
+        break;
+      case "":
+        break;
+    }
   }
 }
 

@@ -1,0 +1,103 @@
+<div class="mt-4">
+  <div class="container">
+    <h3>Deleted Courses</h3>
+    <h4><a href="/me/stored/courses">My courses</a></h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Course Name</th>
+          <th scope="col">Classification</th>
+          <th scope="col" colspan="2">Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each courses}}
+          <tr>
+            <th scope="row">{{autoIncrease @index}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.classification}}</td>
+            <td>{{this.createdAt}}</td>
+            <td>
+              <a
+                href=""
+                class="btn-restore btn btn-primary"
+                data-id="{{this._id}}"
+                class="btn btn-dark"
+              >Restore</a>
+              <a
+                href=""
+                class="btn btn-danger"
+                data-id="{{this._id}}"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal"
+              >Bonk!!!!</a>
+            </td>
+          </tr>
+        {{else}}
+          <tr class="mt-4">
+            <td colspan="5" class="text-center">
+              The bin is clean as shit!!!
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{{! Hidden form to submit delete request }}
+<form method="POST" name="delete-form"></form>
+
+{{! Confirmation }}
+<!-- Delete Modal -->
+<div
+  class="modal fade"
+  id="deleteModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation Box</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Are you sure to permanently delete this course?
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >Cancel Delete</button>
+        <button
+          id="btn-delete-course"
+          type="button"
+          class="btn btn-danger"
+        >Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function (event) { var courseId;
+  var actionForm = document.forms["delete-form"]; var btnDelete =
+  document.getElementById("btn-delete-course"); var btnsRestore =
+  $(".btn-restore"); $("#deleteModal").on("show.bs.modal", function (event) {
+  var button = $(event.relatedTarget); courseId = button.data("id"); });
+  btnDelete.onclick = function () { actionForm.action = "/courses/" + courseId +
+  "/destroy?_method=DELETE"; actionForm.submit(); }; btnsRestore.click(function
+  (e) { e.preventDefault(); courseId = $(this).data("id");
+  console.log(courseId); actionForm.action = "/courses/" + courseId +
+  "/restore?_method=PATCH"; actionForm.submit(); }); });
+
+</script>
